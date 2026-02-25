@@ -11,7 +11,7 @@ const app = express()
 const allowed = [
   'http://localhost:3000',
   'http://localhost:3001',
-  'http://dfs-front.vercel.app',
+  'https://dfs-front-qu4b.vercel.app',
   'https://dfs-front-qu4b-rlfpdtzmx-ricardob-lang06s-projects.vercel.app'
 ];
 
