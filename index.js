@@ -12,13 +12,14 @@ const app = express()
 const allowed = [
   'http://localhost:3000',
   'http://localhost:3001',
+  'https://dfs-front.vercel.app'
 ];
 
 const limiter = rateLimit({
-    windowMs: 15 * 60 *1000,//15 minutos
-    max: 90,//límite de solicitudes por IP
-    message: 'Demasiadas solicitudes, por favor intente de nuevo más tarde'
-})
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // Limite de 100 solicitudes por IP
+  message: 'Demasiadas solicitudes, por favor intente de nuevo más tarde.'
+});
 
 app.use(limiter);
 
@@ -30,9 +31,13 @@ app.use(cors({
   }
 }));
 
-app.use(express.json())
+app.use(express.json());
 
-app.use
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 
 app.get('/', (req, res) => {
   res.send('API OK');
@@ -50,18 +55,17 @@ app.get('/privado', authMiddleware, (req, res) => {
 
 
 app.listen(PORT, () => {
-  console.log(`Servidor Corriendo en el puerto ${PORT}`)
+  console.log(`Servidor Corriendo en el puerto ${PORT}, y todo funciona bien!!`);
 })
 
 app.get('/health', async (req, res) => {
-    try{
-        await pool.query('select 1');
-        return res.json({ok: true});
-    }catch(err){
-        return res.status(500).json({ok: false})
-    }
-  res.json({ok:true, service:'api'})
-})
+  try {
+    await pool.query('select 1');
+    return res.json({ ok: true });
+  } catch (err) {
+    return res.status(500).json({ ok: false })
+  }
+});
 
 app.get('/health/db', async (req, res) => {
   try {
