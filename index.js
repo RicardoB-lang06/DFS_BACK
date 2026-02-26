@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const { pool } = require('./src/db');
 const { sign, authMiddleware } = require('./src/auth');
 const { router: productosRouter } = require('./src/routes/productos.routes');
@@ -13,6 +14,14 @@ const allowed = [
   'http://localhost:3001',
 ];
 
+const limiter = rateLimit({
+    windowMs: 15 * 60 *1000,//15 minutos
+    max: 90,//límite de solicitudes por IP
+    message: 'Demasiadas solicitudes, por favor intente de nuevo más tarde'
+})
+
+app.use(limiter);
+
 app.use(cors({
   origin: function (origin, cb) {
     if (!origin) return cb(null, true); // Postman
@@ -22,6 +31,9 @@ app.use(cors({
 }));
 
 app.use(express.json())
+
+app.use
+
 app.get('/', (req, res) => {
   res.send('API OK');
 })
